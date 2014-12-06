@@ -1,4 +1,8 @@
 {
   "name": "twenty20",
-  "main": "index.html"
+  "main": "index.html",
+  "dependencies": {
+    "moment": "~2.8.4",
+    "sprintf": "~0.1.5"
+  }
 }
