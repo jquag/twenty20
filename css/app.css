@@ -23,3 +23,11 @@ p {
   margin: 5px;
   color: #CACACC;
 }
+
+#muter {
+  position: absolute;
+}
+
+#muter i {
+  color: #CACACC;
+}
