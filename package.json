@@ -1,9 +1,10 @@
 {
   "name": "twenty20",
+  "version": "0.1",
   "main": "index.html",
   "window": {
     "title": "twenty20",
-    "toolbar": false,
+    "toolbar": true,
     "frame": false,
     "width": 200,
     "height": 100,
@@ -11,7 +12,9 @@
     "min_height": 100,
     "position": "center",
     "resizable": true,
-    "frame": true
+    "frame": true,
+    "show": false,
+    "show_in_taskbar": false
   },
   "dependencies": {
     "moment": "~2.8.4",

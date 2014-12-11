@@ -7,52 +7,64 @@
   var moment = require('moment');
   var sprintf = require('sprintf');
 
-  var timer = document.querySelector('#timer');
   var audio = document.querySelector('audio');
-  var message = document.querySelector('p');
   var gui = require('nw.gui');
-  //TODO JQ: create icon
-  var win = gui.Window.get();
+  var timerInterval;
+  var onScreen = true;
 
-  //var tray = new gui.Tray({ icon: 'images/mouser1.png' });
-  var tray = new gui.Tray({ title: '<o (]' });
-  tray.on('click', function() { win.show(); });
+  var quit = function() {
+    gui.App.quit();
+  };
+
+  var reset = function() {
+    clearInterval(timerInterval);
+    startTimer('screen', moment().add(SCREEN_MINS, 'minutes'));
+  };
+
+  //build menu
+  var menu = new gui.Menu();
+  //TODO JQ: use an icon for the timer menu item
+  menu.append(new gui.MenuItem({ label: '20:00', enabled: false }));
+  menu.append(new gui.MenuItem({ type: 'separator' }));
+  //TODO JQ: wireup mute
+  menu.append(new gui.MenuItem({ label: 'mute' }));
+  menu.append(new gui.MenuItem({ label: 'reset timer', click: reset }));
+  menu.append(new gui.MenuItem({ label: 'quit', click: quit }));
+
+  //TODO JQ: use an icon for the tray
+  var tray = new gui.Tray({ title: '( o o )', menu: menu });
 
   var updateTimer = function(endingMoment) {
       var duration = moment.duration(endingMoment.diff(moment()));
       if (duration.asMilliseconds() <= 0) {
-        timer.textContent = '00:00';
+        menu.items[0].label = '00:00';
         return false;
       } else {
-        timer.textContent = sprintf('%02d', duration.minutes()) + ':' + sprintf('%02d', duration.seconds());
+        var time = sprintf('%02d', duration.minutes()) + ':' + sprintf('%02d', duration.seconds());
+        menu.items[0].label = time;
         return true;
       }
   };
 
-  //TODO JQ: make a mute button
   var lookAway = function() {
-    //TODO JQ: change to an icon
-    tray.title = 'o> (]';
+    onScreen = false;
+    tray.title = '( - - )';
     audio.play();
     new Notification(sprintf('Look away from the screen for %d seconds.', AWAY_SECONDS), {body: 'Try to focus on something at least 20 feet away.'});
-    message.textContent = 'Look away for ...';
-    timer.className = 'looking-away';
   };
 
   var lookAtScreen = function() {
-    //TODO JQ: change to an icon
-    tray.title = '<o (]';
+    onScreen = true;
+    tray.title = '( o o )';
     audio.play();
     new Notification('It is time to look at the screen again.');
-    message.textContent = 'Look away in ... ';
-    timer.className = 'looking-at-screen';
   };
 
   var startTimer = function(type, endTime) {
-    var intervalId = setInterval(function() {
+    timerInterval = setInterval(function() {
       var stillCountingDown = updateTimer(endTime);
       if (!stillCountingDown) {
-        clearInterval(intervalId);
+        clearInterval(timerInterval);
         if (type == 'screen') {
           lookAway();
           startTimer('away', moment().add(AWAY_SECONDS, 'seconds'));
