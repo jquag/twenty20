@@ -5,13 +5,6 @@
   "window": {
     "title": "twenty20",
     "toolbar": true,
-    "frame": false,
-    "width": 200,
-    "height": 100,
-    "min_width": 200,
-    "min_height": 100,
-    "position": "center",
-    "resizable": true,
     "frame": true,
     "show": false,
     "show_in_taskbar": false
